@@ -1,0 +1,17 @@
+./configure --enable-cross-compile --cross-prefix=arm-linux-gnueabihf- \
+--arch=arm --target-os= linux --prefix=$PWD/library \
+--disable-all --disable-autodetect --disable-podpages \
+--disable-asm --enable-shared --disable-static --disable-ffmpeg \
+--disable-ffplay - -disable-ffprobe --disable-doc \
+--enable-avcodec --enable-avformat --enable-decoders \
+--enable-encoders --enable-demuxers --enable-parsers \
+--enable-protocol='file' -- enable-swscale --disable-zlib
+
+lvgl -lavformat -lavcodec -lavutil -lswscale -lm -lpthread
+
+void lv_example_ffmpeg(void)
+{
+    lv_obj_t * player = lv_ffmpeg_player_create(lv_scr_act());
+    lv_ffmpeg_player_set_src(player, "/root/h2demo.mp4");
+    lv_ffmpeg_player_set_auto_restart(player, true);
+}

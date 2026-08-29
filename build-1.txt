@@ -1,0 +1,240 @@
+2. ubuntu source change
+
+The default apt source for newly installed Ubuntu is a foreign source.
+Domestic access will be very slow. Therefore, it is very necessary to change the domestic source.
+
+cd /etc/apt/
+sudo cp sources.list sources.list.bak
+
+Modify the source list file
+sudo vim sources.list
+
+Delete all the content in it and replace it with Alibaba Cloud Source
+Alibaba cloud source ubuntu 20.4
+
+deb http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+deb http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-security main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-updates main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-proposed main restricted universe multiverse
+deb-src http://mirrors.aliyun.com/ubuntu/ focal-backports main restricted universe multiverse
+
+Tsinghua source ubuntu deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan main restricted universe multiverse
+
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-updates main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-updates main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-backports main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-backports main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-security main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-security main restricted universe multiverse
+deb https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-proposed main restricted universe multiverse
+deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ eoan-proposed main restricted universe multiverse20.04
+
+After modifying the software sources, update the software list and software:
+
+sudo apt-get update
+sudo apt-get upgrade
+
+3. SSD202 compilation tool installation
+
+It is recommended to use VMware virtual machine to install ubuntu development,
+and it is never recommended to use wsl development because of pitfalls.
+Ubuntu can use the officially recommended version 16.04, but I can also use ubuntu 20.04.
+The following tutorial is for ubuntu 20.04. Because different versions are really different.
+
+For SDK compilation, you need to install some tools, otherwise the compilation will fail.
+The installation source should be the same as the domestic Ali or Tsinghua ubuntu 20.04
+with the computer system version
+
+sudo apt-get install libc6-dev-i386 lib32z1 lib32ncurses5 cmake libncurses5-dev libncursesw5-dev bc xz-utils automake libtool libevdev-dev pkg-config
+sudo apt install openssh-server
+
+sudo apt-get install libuuid1:i386
+	???E: Unable to locate package libuuid1:i386
+	??????:
+	1.sudo dpkg --add-architecture i386
+	2.sudo apt-get update
+	3.sudo apt-get install libuuid1:i386
+sudo apt-get install cmake libncurses5-dev libncursesw5-dev bc xz-utils automake libtool libevdev-dev pkg-config
+
+If the default sh is not bash, you need to change sh to bash: (must be switched to bash)
+
+sudo apt-get install dash
+sudo rm /bin/sh
+sudo ln –s /bin/bash /bin/sh
+
+After setting, you need to restart the current terminal to take effect
+
+Install toolchain
+
+Copy the gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tar.gz files to the virtual
+machine /opt folder
+Unzip the compressed package
+	tar -zxvf gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tar.gz
+
+Unzip multiple files with the same suffix command
+
+	for tar in *.tar.gz; do tar xvf $tar; done
+
+Unzip multiple files with the same suffix to the specified folder command
+
+	for tar in *.tar.gz; do tar xvf $tar -C /home/; done
+
+Set the toolchain to the environment variable.
+Download the cross-compiler (https://cowtransfer.com/s/e7b3ca8c73c34d) tool and use the transmission password: je6lak extraction
+Add in /etc/profile:export PATH=/opt/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH
+
+It will take effect when you reopen a terminal after completion
+
+install samba server
+
+Installation tutorial reference link
+
+The configuration file in smb.conf is appended at the end of the file
+
+[work]
+	comment = samba home directory 
+	path = /home/beal.wu
+	public = yes
+	browseable = yes
+	public = yes
+	read only = no
+	valid users = user lengzg beal.wu
+	write list = lengzg beal.wu
+	create mask = 0777
+	directory mask = 0777 
+	force user = nobody
+	force group = nogroup
+	available = yes
+	writable = yes
+
+4. The compilation process
+
+Put the package in the ubuntu system.
+After decompressing the boot, kernel, project, and sdk compressed packages
+in the SDK package of TAKOYAKI_DLC00V030 version,
+the corresponding package files are obtained respectively.
+
+1. Compile the boot process
+
+Enter the terminal into the boot folder directory and execute the following command
+
+Set environment variables
+	declare -x ARCH="arm"
+Set build environment variables
+	declare -x CROSS_COMPILE="arm-linux-gnueabihf-"
+
+Select the corresponding onboard flash type to execute the configuration command
+SPInor Flash type
+	make infinity2m_defconfig //spinor, execute the corresponding command according to the onboard flash type
+SPInand Flash type
+	make infinity2m_spinand_defconfig//Spinand, execute the corresponding command according to the onboard flash type
+
+Open menuconfig to visualize the configuration, if no configuration is required.
+Skip this command to
+	make menuconfig//modify && save
+
+Clear build content
+	make clean
+Start compiling
+	make
+
+2. Compile the kernel process
+
+Enter the terminal into the kernel folder directory and execute the following command
+
+Set environment variables (no need to execute if executed in the same terminal as boot)
+	declare -x ARCH="arm"
+Set the compilation environment variables (if it is executed in the same terminal as boot, it does not need to be executed again)
+	declare -x CROSS_COMPILE="arm-linux-gnueabihf-"
+
+Select the corresponding onboard flash type to execute the configuration command
+SPInor Flash Type
+	make infinity2m_ssc011a_s01a_minigui_defconfig//SSD20x spinor
+SPInand Flash Type
+	make infinity2m_spinand_ssc011a_s01a_minigui_defconfig//SSD20x Spinand
+
+Open menuconfig to visualize the configuration, if no configuration is required. Skip this command to
+	make menuconfig//modify && save
+Clear build content
+	make clean
+Start compiling
+	make
+
+3. Compile SDK process
+
+Enter the terminal into the project folder directory and execute the following command
+
+Select the corresponding onboard flash type to execute the configuration command
+SPInor Flash Type
+	./setup_config.sh ./configs/nvr/i2m/8.2.1/nor.glibc-squashfs.011a.64/SSD20x Spinor
+SPInand Flash Type
+	./setup_config.sh ./configs/nvr/i2m/8.2.1/spinand.glibc.011a.64/SSD20x Spinand
+Clear build content
+	make clean
+Start compiling
+	make image
+
+4. Get the compiled images update package
+
+After compiling the above files, under the project/image/output/images folder are the files we need to update to the development board. Update the contents of the entire images folder to the SSD202 development board through the tftpd tool.
+
+Note: If you want to update uboot and kernel, you need to compile the project first,
+then copy the bins of uboot and kernel to
+/yourpath/xxx/image/output/image, the kernel is uImage.xz -> kernel.
+
+Or execute the make image script when compiling the SDK.
+After compiling, the firmware compiled by the boot and kernel will be automatically
+copied to the corresponding location.
+
+Virtual machine problem
+
+Can't connect to the network
+Set bridge mode, automatic, the virtual machine sees that it is connected but still has no network.
+
+Turn off the system where the virtual machine is running, go to
+	Edit->Virtual Network Editor->Startup Settings->Automatically
+select the bridge as the network card of the local window. For details, refer to the link
+(https://www.jianshu.com/p/24b1f75b2d2a)
+
+If the above steps do not work. Use the following method. For details, refer to the link
+(https://blog.csdn.net/qq_40141862/article/details/86657408)
+ifconfig command prints the following results when querying ip
+
+xxx@ubuntu:~$ ifconfig
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+		inet 127.0.0.1  netmask 255.0.0.0
+		inet6 ::1  prefixlen 128  scopeid 0x10<host>
+		loop  txqueuelen 1000  (????)
+		RX packets 4749  bytes 287841 (287.8 KB)
+		RX errors 0  dropped 0  overruns 0  frame 0
+		TX packets 4749  bytes 287841 (287.8 KB)
+		TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+sudo -i
+Switch to root user
+Enter dhclient -v, at this time, ifconfigthe ip address can be found in the search. Can play again
+
+The output is as follows (actual results vary by PC)
+
+ens33: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+		inet 192.168.1.75  netmask 255.255.255.0  broadcast 192.168.1.255
+		inet6 fe23::20c:26ff:fe15:12b8  prefixlen 64  scopeid 0x20<link>
+		ether 00:0c:29:1f:12:b8  txqueuelen 1000  (???)
+		RX packets 267  bytes 17570 (17.5 KB)
+		RX errors 0  dropped 0  overruns 0  frame 0
+		TX packets 59  bytes 9188 (9.1 KB)
+		TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+lo: flags=73<UP,LOOPBACK,RUNNING>  mtu 65536
+		inet 127.0.0.1  netmask 255.0.0.0
+		inet6 ::1  prefixlen 128  scopeid 0x10<host>
+		loop  txqueuelen 1000  (????)
+		RX packets 383  bytes 29360 (29.3 KB)
+		RX errors 0  dropped 0  overruns 0  frame 0
+		TX packets 383  bytes 29360 (29.3 KB)
+		TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
