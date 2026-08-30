@@ -1,0 +1,27 @@
+diff --git a/drivers/sstar/emac/mdrv_emac.c b/drivers/sstar/emac/mdrv_emac.c
+index 4e5076a..a833184 100755
+--- a/drivers/sstar/emac/mdrv_emac.c
++++ b/drivers/sstar/emac/mdrv_emac.c
+@@ -1908,7 +1908,7 @@ static int MDev_EMAC_tx(struct sk_buff *skb, struct net_device *dev)
+         // dma_unmap_single(NULL, VIRT2PA(start), EMAC_MTU, DMA_TO_DEVICE);
+         if (nr_frags)
+         {
+-            char* start = kmalloc(EMAC_MTU, GFP_ATOMIC);
++            char* start = kmalloc(ALIGN(EMAC_MTU,256), GFP_ATOMIC);
+             char* p = start;
+ 
+             if (!start)
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+index 601dfa8..569edb2 100644
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -222,7 +222,8 @@
+ /* Maximum value in skb->csum_level */
+ #define SKB_MAX_CSUM_LEVEL	3
+ 
+-#define SKB_DATA_ALIGN(X)	ALIGN(X, SMP_CACHE_BYTES)
++//#define SKB_DATA_ALIGN(X)	ALIGN(X, SMP_CACHE_BYTES)
++#define SKB_DATA_ALIGN(X)	ALIGN(X, 256)
+ #define SKB_WITH_OVERHEAD(X)	\
+ 	((X) - SKB_DATA_ALIGN(sizeof(struct skb_shared_info)))
+ #define SKB_MAX_ORDER(X, ORDER) \

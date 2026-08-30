@@ -1,0 +1,26 @@
+commit 2f80246479e383a08f0e0edb97a9279d520451e1
+Author: xinhua.ye <xinhua.ye@sigmastar.com.cn>
+Date:   Fri Apr 30 14:26:12 2021 +0800
+
+    [ssd20x][project]Update IPL
+    
+    Sync from:b1266101cc910627921a256ab6b41be1fa2bb540
+    config: make clean;make FASTBOOT=1 ALK=1
+    
+    [rootcause]:NA
+    [solution]:NA
+    [sideeffect]:NA
+    [selftestlist]:
+    1.NA
+    2.NA
+    3.NA
+    [selftestresult]: P
+    [ticket]: mantis_1693195
+    [redflag]: N
+
+diff --git a/board/i2m/boot/ipl/fastboot/IPL.bin b/board/i2m/boot/ipl/fastboot/IPL.bin
+index 7571cc4..f9a312b 100755
+Binary files a/board/i2m/boot/ipl/fastboot/IPL.bin and b/board/i2m/boot/ipl/fastboot/IPL.bin differ
+diff --git a/board/i2m/boot/ipl/fastboot/IPL_CUST.bin b/board/i2m/boot/ipl/fastboot/IPL_CUST.bin
+index 4314216..cd6e9cf 100644
+Binary files a/board/i2m/boot/ipl/fastboot/IPL_CUST.bin and b/board/i2m/boot/ipl/fastboot/IPL_CUST.bin differ

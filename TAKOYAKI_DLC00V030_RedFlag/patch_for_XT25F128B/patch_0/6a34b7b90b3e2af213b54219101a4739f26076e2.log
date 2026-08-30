@@ -1,0 +1,43 @@
+commit 6a34b7b90b3e2af213b54219101a4739f26076e2
+Author: jianzhi.huang <jianzhi.huang@sigmastar.com.cn>
+Date:   Wed Jul 21 16:10:53 2021 +0800
+
+    [P2][SPINOR]if XTX,the unlock in the init process
+    
+    [rootcause]:NA
+    [solution]:NA
+    [sideeffect]:NA
+    [selftestlist]:
+    1.xinhua review
+    2.NA
+    3.NA
+    [selftestresult]: P
+    [ticket]: mantis_10001616
+    [redflag]: N
+    Change-Id: If460cafdd14f4a3faa6a62a21c55a42e9ab5278f
+
+diff --git a/drivers/sstar/flash_isp/infinity2m/halSERFLASH.c b/drivers/sstar/flash_isp/infinity2m/halSERFLASH.c
+index 53de1e6..d5d6a26 100755
+--- a/drivers/sstar/flash_isp/infinity2m/halSERFLASH.c
++++ b/drivers/sstar/flash_isp/infinity2m/halSERFLASH.c
+@@ -1324,6 +1324,9 @@ MS_BOOL HAL_SERFLASH_DetectType(void)
+ 
+ #endif
+ 
++    if(_hal_SERFLASH.u8DID0 == 0x40 && _hal_SERFLASH.u8DID1 == 0x18)
++        HAL_FSP_WriteProtect(0);
++
+     return bDetect;
+ 
+ }
+@@ -4472,6 +4475,10 @@ MS_BOOL HAL_FSP_WriteProtect(MS_BOOL bEnable)
+     {
+         u8Status &= ~BITS(6:2,0x1F);
+     }
++    else if(_hal_SERFLASH.u8DID0 == 0x40 && _hal_SERFLASH.u8DID1 == 0x18)
++    {
++        u8Status &= ~BITS(7:2,0x3F);
++    }
+     else {//check on WB/MX
+         u8Status &= ~BITS(5:2,0xF);
+     }

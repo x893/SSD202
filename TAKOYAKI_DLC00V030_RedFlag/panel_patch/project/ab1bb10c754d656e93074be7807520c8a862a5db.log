@@ -1,0 +1,29 @@
+commit ab1bb10c754d656e93074be7807520c8a862a5db
+Author: xinhua.ye <xinhua.ye@sigmastar.com.cn>
+Date:   Fri Apr 30 12:01:21 2021 +0800
+
+    [ssd20x][project]Update ko
+    
+    mi_ai.ko/mi_alsa.ko sync from:d40c43c10c3b1b0d3034c5deceb8f231d3b7c574
+    mhal.ko sync from:ef249cc937fd3043189d3effeef0a8b045f64edf
+    
+    [rootcause]:NA
+    [solution]:NA
+    [sideeffect]:NA
+    [selftestlist]:
+    1.NA
+    2.NA
+    3.NA
+    [selftestresult]: P
+    [ticket]: mantis_1693195
+    [redflag]: N
+
+diff --git a/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mhal.ko b/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mhal.ko
+index 60305d7..c7683c5 100644
+Binary files a/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mhal.ko and b/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mhal.ko differ
+diff --git a/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mi_ai.ko b/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mi_ai.ko
+index 7c398dd..eedeb04 100644
+Binary files a/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mi_ai.ko and b/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mi_ai.ko differ
+diff --git a/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mi_alsa.ko b/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mi_alsa.ko
+index 47300fe..a680a98 100644
+Binary files a/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mi_alsa.ko and b/release/nvr/i2m/common/glibc/8.2.1/modules/4.9.84/mi_alsa.ko differ

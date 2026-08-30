@@ -1,0 +1,166 @@
+diff --git a/boot/common/cmd_mstar.c b/boot/common/cmd_mstar.c
+index 4179533..4dc0047 100755
+--- a/boot/common/cmd_mstar.c
++++ b/boot/common/cmd_mstar.c
+@@ -704,19 +704,27 @@ int do_sdstar     (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+     {
+         total_cmd++;
+     }
+-    free(buffer_caculate);
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"dcache on");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"bootlogo 1 0 0 0 0");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp)); 
+-    snprintf(tmp, sizeof(tmp) - 1,"bootframebuffer bar 0");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"dcache off");
+-    run_command(tmp, 0);
++    printf("do_sdstar-----------> total_cmd=%d\n", total_cmd);
++    if(total_cmd > 0)
++    {
++        memset(tmp,0,sizeof(tmp));
++        snprintf(tmp, sizeof(tmp) - 1,"gpio output 4 1");
++	run_command(tmp,0);
++
++    	free(buffer_caculate);
++    	memset(tmp,0,sizeof(tmp));
++    	snprintf(tmp, sizeof(tmp) - 1,"dcache on");
++    	run_command(tmp, 0);
++    	memset(tmp,0,sizeof(tmp));
++    	snprintf(tmp, sizeof(tmp) - 1,"bootlogo 1 0 0 0 0");
++    	run_command(tmp, 0);
++    	memset(tmp,0,sizeof(tmp)); 
++    	snprintf(tmp, sizeof(tmp) - 1,"bootframebuffer bar 0");
++    	run_command(tmp, 0);
++    	memset(tmp,0,sizeof(tmp));
++    	snprintf(tmp, sizeof(tmp) - 1,"dcache off");
++    	run_command(tmp, 0);
++   }
+ #endif
+     script_buf = buffer;
+     while ((next_line = get_script_next_line(&script_buf)) != NULL)
+@@ -736,18 +744,28 @@ int do_sdstar     (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ #endif
+     }
+ #if defined(CONFIG_SSTAR_UPGRADE_UI)
+-    memset(tmp,0,sizeof(tmp));    
+-    snprintf(tmp, sizeof(tmp) - 1,"dcache on");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp));    
+-    snprintf(tmp, sizeof(tmp) - 1, "bootframebuffer bar 100");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp));    
+-    snprintf(tmp, sizeof(tmp) - 1,"dcache off");
+-    run_command(tmp, 0);
++    if(total_cmd > 0){			   
++    	memset(tmp,0,sizeof(tmp));    
++    	snprintf(tmp, sizeof(tmp) - 1,"dcache on");
++    	run_command(tmp, 0);
++    	memset(tmp,0,sizeof(tmp));    
++    	snprintf(tmp, sizeof(tmp) - 1, "bootframebuffer bar 100");
++    	run_command(tmp, 0);
++    	memset(tmp,0,sizeof(tmp));    
++    	snprintf(tmp, sizeof(tmp) - 1,"dcache off");
++    	run_command(tmp, 0);
++   }
+ #endif
+ 
+     free(buffer);
++#if defined(CONFIG_SSTAR_UPGRADE_UI)
++    if(total_cmd > 0)
++    {
++	printf("--------------------------> stop boot\n");
++	while(1)
++		mdelay(100000);
++    }			  
++#endif
+     return ret;
+ 
+ }
+@@ -827,19 +845,27 @@ int do_usbstar     (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+     {
+         total_cmd++;
+     }
+-    free(buffer_caculate);
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"dcache on");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"bootlogo 1 0 0 0 0");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp)); 
+-    snprintf(tmp, sizeof(tmp) - 1,"bootframebuffer bar 0");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"dcache off");
+-    run_command(tmp, 0);
++	printf("do_usbstar-----------> total_cmd=%d\n", total_cmd);
++	if (total_cmd > 0){
++		//run_command("gpio output 4 1", 0);														
++		memset(tmp,0,sizeof(tmp));
++        	snprintf(tmp, sizeof(tmp) - 1,"gpio output 4 1");
++        	run_command(tmp,0);
++
++		free(buffer_caculate);
++		memset(tmp,0,sizeof(tmp));
++		snprintf(tmp, sizeof(tmp) - 1,"dcache on");
++		run_command(tmp, 0);
++		memset(tmp,0,sizeof(tmp));
++		snprintf(tmp, sizeof(tmp) - 1,"bootlogo 1 0 0 0 0");
++		run_command(tmp, 0);
++		memset(tmp,0,sizeof(tmp)); 
++		snprintf(tmp, sizeof(tmp) - 1,"bootframebuffer bar 0");
++		run_command(tmp, 0);
++		memset(tmp,0,sizeof(tmp));
++		snprintf(tmp, sizeof(tmp) - 1,"dcache off");
++		run_command(tmp, 0);
++	}
+ #endif
+     script_buf = buffer;
+     while ((next_line = get_script_next_line(&script_buf)) != NULL)
+@@ -868,20 +894,30 @@ int do_usbstar     (cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
+ #endif
+     }
+ #if defined(CONFIG_SSTAR_UPGRADE_UI)
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"dcache on");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"bootframebuffer bar 100");
+-    run_command(tmp, 0);
+-    memset(tmp,0,sizeof(tmp));
+-    snprintf(tmp, sizeof(tmp) - 1,"dcache off");
+-    run_command(tmp, 0);
+-    udelay(4*1000*1000);
+-    run_command("reset", 0);
++   if (total_cmd > 0){				
++    	memset(tmp,0,sizeof(tmp));
++   	snprintf(tmp, sizeof(tmp) - 1,"dcache on");
++    	run_command(tmp, 0);
++	memset(tmp,0,sizeof(tmp));
++	snprintf(tmp, sizeof(tmp) - 1,"bootframebuffer bar 100");
++    	run_command(tmp, 0);
++    	memset(tmp,0,sizeof(tmp));
++    	snprintf(tmp, sizeof(tmp) - 1,"dcache off");
++    	run_command(tmp, 0);
++    	udelay(4*1000*1000);
++    	run_command("reset", 0);
++	}
+ #endif
+     free(buffer);
+     init_usb_flag=0;
++#if defined(CONFIG_SSTAR_UPGRADE_UI)
++    if (total_cmd > 0){
++	//don't reboot
++	printf("--------------------------> stop boot\n");
++	while(1)
++		mdelay(100000);
++	}
++#endif 
+     return ret;
+ }
+ 

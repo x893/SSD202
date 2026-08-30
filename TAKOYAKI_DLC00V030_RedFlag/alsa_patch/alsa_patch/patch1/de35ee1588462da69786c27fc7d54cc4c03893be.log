@@ -1,0 +1,76 @@
+commit de35ee1588462da69786c27fc7d54cc4c03893be
+Author: voli.wu <voli.wu@sigmastar.com.tw>
+Date:   Tue Feb 2 21:11:44 2021 +0800
+
+    [P2][MI_AUDIO]modify alsa for master_p2_stable
+    
+    [rootcause]:modify alsa for master_p2_stable
+    [solution]:modify alsa for master_p2_stable
+    [sideeffect]:NA
+    [selftestlist]:
+    1.Warm test 24h
+    2.NA
+    3.NA
+    [selftestresult]: P
+    [ticket]: sspm_10921
+    [redflag]: N
+    
+    (cherry picked from commit 066df4192f5fc14d753fc86891e9b7a70fcf7d37)
+
+diff --git a/image/configs/i2m/rootfs.mk b/image/configs/i2m/rootfs.mk
+index 256314d..74a43a5 100755
+--- a/image/configs/i2m/rootfs.mk
++++ b/image/configs/i2m/rootfs.mk
+@@ -13,7 +13,7 @@ root:
+ 	mkdir -p $(miservice$(RESOUCE))/lib
+ 	cp $(LIB_DIR_PATH)/mi_libs/dynamic/* $(miservice$(RESOUCE))/lib/
+ 	cp $(LIB_DIR_PATH)/ex_libs/dynamic/* $(miservice$(RESOUCE))/lib/
+-	
++
+ 	mkdir -p $(miservice$(RESOUCE))
+ 	if [ "$(BOARD)" = "010A" ]; then \
+ 		cp -rf $(PROJ_ROOT)/board/ini/* $(miservice$(RESOUCE)) ;\
+@@ -45,7 +45,7 @@ root:
+ 		mkdir -p  $(appconfigs$(RESOUCE)); \
+ 		mkdir -p $(OUTPUTDIR)/rootfs/appconfigs;\
+ 	fi;
+-	
++
+ 	if [ $(BENCH) = "yes" ]; then \
+ 		cp -rf /home/edie.chen/bench  $(miservice$(RESOUCE)) ; \
+ 		cp  $(miservice$(RESOUCE))/bench/demo.bash  $(miservice$(RESOUCE))/bench.sh ; \
+@@ -64,6 +64,9 @@ root:
+ 	echo mice 0:0 0660 =input/ >> ${OUTPUTDIR}/rootfs/etc/mdev.conf
+ 	echo mouse.* 0:0 0660 =input/ >> ${OUTPUTDIR}/rootfs/etc/mdev.conf
+ 	echo event.* 0:0 0660 =input/ >> ${OUTPUTDIR}/rootfs/etc/mdev.conf
++	echo pcm.* 0:0 0660 =snd/ >> ${OUTPUTDIR}/rootfs/etc/mdev.conf
++	echo control.* 0:0 0660 =snd/ >> ${OUTPUTDIR}/rootfs/etc/mdev.conf
++	echo timer 0:0 0660 =snd/ >> ${OUTPUTDIR}/rootfs/etc/mdev.conf
+ 	echo '$$DEVNAME=bus/usb/([0-9]+)/([0-9]+) 0:0 0660 =bus/usb/%1/%2' >> ${OUTPUTDIR}/rootfs/etc/mdev.conf
+ 
+ 	echo export PATH=\$$PATH:/config >> ${OUTPUTDIR}/rootfs/etc/profile
+@@ -199,7 +202,7 @@ root:
+ 		echo export TERM=vt102 >> $(OUTPUTDIR)/customer/demo.sh;	\
+ 		echo export TERMINFO=/config/terminfo >> $(OUTPUTDIR)/customer/demo.sh;	\
+ 	fi;
+-	
++
+ 	mkdir -p $(OUTPUTDIR)/vendor
+ 	mkdir -p $(OUTPUTDIR)/customer
+ 	mkdir -p $(OUTPUTDIR)/rootfs/vendor
+diff --git a/release/customer_tailor/nvr_i2m_display_glibc_tailor.mk b/release/customer_tailor/nvr_i2m_display_glibc_tailor.mk
+index dc8939b..6bbd8d5 100755
+--- a/release/customer_tailor/nvr_i2m_display_glibc_tailor.mk
++++ b/release/customer_tailor/nvr_i2m_display_glibc_tailor.mk
+@@ -14,9 +14,10 @@ interface_vdisp:=disable
+ interface_vdec:=enable
+ interface_venc:=enable
+ interface_wlan:=enable
++interface_alsa:=enable
+ 
+ misc_fbdev:=enable
+-verify_zk_full_security:=enable
++#verify_zk_full_security:=enable
+ #mhal
+ #mhal_aio:=disable
+ mhal_csi:=disable

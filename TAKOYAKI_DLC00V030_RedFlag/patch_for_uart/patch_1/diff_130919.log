@@ -1,0 +1,62 @@
+diff --git a/drivers/sstar/serial/ms_uart.c b/drivers/sstar/serial/ms_uart.c
+index 3759e5e..7ff405d 100755
+--- a/drivers/sstar/serial/ms_uart.c
++++ b/drivers/sstar/serial/ms_uart.c
+@@ -493,7 +493,7 @@ static int ms_uart_rs485_gpio(struct serial_rs485 *rs485,bool send)
+             gpio_set_value(rs485->padding[0],0);UART_ERR("send set low\n");
+         }
+     }
+-    else if ((rs485->flags & SER_RS485_ENABLED) && !send) 
++    else if ((rs485->flags & SER_RS485_ENABLED) && !send)
+     {
+         if(rs485->delay_rts_after_send)udelay(rs485->delay_rts_after_send);
+         if(rs485->flags&SER_RS485_RTS_AFTER_SEND)
+@@ -547,7 +547,14 @@ void inline ms_uart_clear_fifos(struct uart_port *p)
+     unsigned int timeout=0;
+ 
+     while( ((INREG8(REG_USR(p)) & UART_USR_BUSY)) && timeout < 2000)
++    {
+         timeout++;
++        INREG16(REG_DLL_THR_RBR(p));
++    }
++    if(timeout == 2000)
++    {
++        printk("[UART] clear fifos timeout!!!\n");
++    }
+     OUTREG8(REG_IIR_FCR(p), UART_FCR_FIFO_ENABLE);
+     OUTREG8(REG_IIR_FCR(p), UART_FCR_FIFO_ENABLE | UART_FCR_CLEAR_RCVR | UART_FCR_CLEAR_XMIT);
+     OUTREG8(REG_IIR_FCR(p), 0);
+@@ -744,7 +751,7 @@ static s32 _ms_uart_console_prepare(int idx)
+     struct device_node *console_np;
+     struct resource res;
+ 
+-    char* uart_name[] = 
++    char* uart_name[] =
+         {
+             "/soc/uart0@1F221000",
+             "/soc/uart1@1F221200",
+@@ -801,7 +808,7 @@ static s32 _ms_uart_console_prepare(int idx)
+     #define UART_BAUDRATE       115200
+     #define UART_CLK            172800000
+ 
+-#define UART_LCR_PARITY             0x08 
++#define UART_LCR_PARITY             0x08
+ #define UART_FCR_ENABLE_FIFO        0x01
+ 
+ // #define REG_UART_SEL3210    GET_REG16_ADDR(REG_ADDR_BASE_CHIPTOP, 0x53)
+@@ -1722,6 +1729,7 @@ static void ms_uart_shutdown(struct uart_port *p)
+         p->rs485.flags &= ~SER_RS485_ENABLED;
+         ms_uart_rs485_config(p, &p->rs485);
+     }
++    ms_force_rx_disable(mp->padmux, DISABLE);
+     if(mp->use_dma)
+     {
+         URDMA_RxEnable(p,FALSE);
+@@ -1758,7 +1766,6 @@ static void ms_uart_shutdown(struct uart_port *p)
+         del_timer_sync(&mp->timer);
+     }
+ 
+-    ms_force_rx_disable(mp->padmux, DISABLE);
+ }
+ 
+ static void ms_uart_set_termios(struct uart_port *p, struct ktermios *pTermios_st, struct ktermios *pOld_st)

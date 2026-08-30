@@ -1,0 +1,36 @@
+commit ea34deb8389551ca25e35bdfda5ebdf592d50608
+Author: malloc.peng <malloc.peng@sigmastar.com.cn>
+Date:   Fri Aug 14 17:26:11 2020 +0800
+
+    [all][busybox]Release busybox, 50c444f3a95c4a97e01a2ae52f639918c0444b4f
+    
+    (Description)add flash_eraseall
+    
+    [rootcause]:NA
+    [solution]:NA
+    [sideeffect]:NA
+    [selftestlist]:
+    1.NA
+    2.NA
+    3.NA
+    [selftestresult]: P
+    [ticket]: mantis_1693195
+    [redflag]: N
+    
+    (cherry picked from commit f43bb9b7fb3e8bb36fea61414bef8c42a5ef7fc4)
+
+diff --git a/image/busybox/busybox-1.20.2-arm-buildroot-linux-uclibcgnueabi-uclibc-4.7.2-static.tar.gz b/image/busybox/busybox-1.20.2-arm-buildroot-linux-uclibcgnueabi-uclibc-4.7.2-static.tar.gz
+index b4fa962..e475dec 100755
+Binary files a/image/busybox/busybox-1.20.2-arm-buildroot-linux-uclibcgnueabi-uclibc-4.7.2-static.tar.gz and b/image/busybox/busybox-1.20.2-arm-buildroot-linux-uclibcgnueabi-uclibc-4.7.2-static.tar.gz differ
+diff --git a/image/busybox/busybox-1.20.2-arm-buildroot-linux-uclibcgnueabihf-uclibc-4.9.4-static.tar.gz b/image/busybox/busybox-1.20.2-arm-buildroot-linux-uclibcgnueabihf-uclibc-4.9.4-static.tar.gz
+index 48d987e..864c254 100755
+Binary files a/image/busybox/busybox-1.20.2-arm-buildroot-linux-uclibcgnueabihf-uclibc-4.9.4-static.tar.gz and b/image/busybox/busybox-1.20.2-arm-buildroot-linux-uclibcgnueabihf-uclibc-4.9.4-static.tar.gz differ
+diff --git a/image/busybox/busybox-1.20.2-arm-linux-gnueabihf-glibc-8.2.1-dynamic-shrink.tar.gz b/image/busybox/busybox-1.20.2-arm-linux-gnueabihf-glibc-8.2.1-dynamic-shrink.tar.gz
+old mode 100644
+new mode 100755
+diff --git a/image/busybox/busybox-1.20.2-arm-linux-gnueabihf-glibc-8.2.1-dynamic.tar.gz b/image/busybox/busybox-1.20.2-arm-linux-gnueabihf-glibc-8.2.1-dynamic.tar.gz
+index d367316..6b79995 100755
+Binary files a/image/busybox/busybox-1.20.2-arm-linux-gnueabihf-glibc-8.2.1-dynamic.tar.gz and b/image/busybox/busybox-1.20.2-arm-linux-gnueabihf-glibc-8.2.1-dynamic.tar.gz differ
+diff --git a/image/busybox/busybox-1.20.2-arm-none-linux-gnueabi-glibc-4.7.2-static.tar.gz b/image/busybox/busybox-1.20.2-arm-none-linux-gnueabi-glibc-4.7.2-static.tar.gz
+index 3eee9c3..34dc7f9 100755
+Binary files a/image/busybox/busybox-1.20.2-arm-none-linux-gnueabi-glibc-4.7.2-static.tar.gz and b/image/busybox/busybox-1.20.2-arm-none-linux-gnueabi-glibc-4.7.2-static.tar.gz differ

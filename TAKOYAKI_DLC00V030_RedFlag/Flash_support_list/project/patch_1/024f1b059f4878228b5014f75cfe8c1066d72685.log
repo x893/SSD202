@@ -1,0 +1,21 @@
+commit 024f1b059f4878228b5014f75cfe8c1066d72685
+Author: xinhua.ye <xinhua.ye@sigmastar.com.cn>
+Date:   Thu Apr 29 17:52:48 2021 +0800
+
+    [ssd20x][project]Add GD 4Gbit_flash:GD5F4GQ6UEYIGR
+    
+    [rootcause]:NA
+    [solution]:NA
+    [sideeffect]:NA
+    [selftestlist]:
+    1.NA
+    2.NA
+    3.NA
+    [selftestresult]: P
+    [ticket]: mantis_1693195
+    [redflag]: N
+    (cherry picked from commit a94d0bb05d41f58c94602d9cd9e60954ca5d03f3)
+
+diff --git a/board/i2m/boot/spinand/partition/SPINANDINFO.sni b/board/i2m/boot/spinand/partition/SPINANDINFO.sni
+index a89e038..afb6955 100755
+Binary files a/board/i2m/boot/spinand/partition/SPINANDINFO.sni and b/board/i2m/boot/spinand/partition/SPINANDINFO.sni differ

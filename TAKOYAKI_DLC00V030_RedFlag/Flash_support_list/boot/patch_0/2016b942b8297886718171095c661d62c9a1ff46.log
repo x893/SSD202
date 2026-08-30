@@ -1,0 +1,31 @@
+commit 2016b942b8297886718171095c661d62c9a1ff46
+Author: jianzhi.huang <jianzhi.huang@sigmastar.com.cn>
+Date:   Mon Mar 29 10:11:03 2021 +0800
+
+    [P2][spinand]fast read Switch to a 2-byte address
+    
+    [rootcause]:NA
+    [solution]:NA
+    [sideeffect]:NA
+    [selftestlist]:
+    1.estart ok
+    2.boot ok
+    3.NA
+    [selftestresult]: P
+    [ticket]: mantis_10000594
+    [redflag]: N
+
+diff --git a/drivers/mstar/spinand/hal/common/drvSPINAND_common_hal.c b/drivers/mstar/spinand/hal/common/drvSPINAND_common_hal.c
+index 2f60d4f..a21c345 100755
+--- a/drivers/mstar/spinand/hal/common/drvSPINAND_common_hal.c
++++ b/drivers/mstar/spinand/hal/common/drvSPINAND_common_hal.c
+@@ -1253,7 +1253,8 @@ U32 HAL_SPINAND_Read (U32 u32Addr, U32 u32DataSize, U8 *pu8Data)
+     {
+ #if !defined(SUPPORT_SPINAND_QUAD) || (0 == SUPPORT_SPINAND_QUAD)
+          /*Config SPI waveform for BDMA*/
+-         QSPI_WRITE(REG_SPI_FUNC_SET, REG_SPI_ADDR2_EN|REG_SPI_DUMMY_EN|REG_SPI_WRAP_EN);
++         //QSPI_WRITE(REG_SPI_FUNC_SET, REG_SPI_ADDR2_EN|REG_SPI_DUMMY_EN|REG_SPI_WRAP_EN);
++         QSPI_WRITE(REG_SPI_FUNC_SET, REG_SPI_ADDR2_EN|REG_SPI_DUMMY_EN);
+          /*Set dummy cycle*/
+          QSPI_WRITE(REG_SPI_CKG_SPI, REG_SPI_USER_DUMMY_EN|REG_SPI_DUMMY_CYC_SINGAL);
+          /*Set mode*/
