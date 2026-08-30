@@ -1,0 +1,5 @@
+https://e.coding.net/weidongshan/sigmstar-202d/boot
+https://e.coding.net/weidongshan/DevelopmentEnvConf
+https://e.coding.net/weidongshan/sigmstar-202d/kernel
+https://e.coding.net/weidongshan/sigmstar-202d/project
+https://e.coding.net/weidongshan/sigmstar-202d/sdk

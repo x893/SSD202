@@ -1,0 +1,8 @@
+https://github.com/fifteenhex/br2games.git
+https://github.com/fifteenhex/br2lvgl.git
+https://github.com/fifteenhex/buildroot_dongshanpione.git
+https://github.com/fifteenhex/buildroot_idosom2d01.git
+https://github.com/fifteenhex/buildroot_miyoomini.git
+https://github.com/fifteenhex/buildroot_unitv2.git
+https://github.com/fifteenhex/DirectFB2.git
+https://github.com/fifteenhex/ssd_lcd.git
