@@ -1,0 +1,108 @@
+1. Download the source code
+Download the kernel source code Download linux-4.9.84.tar.gz
+from https://mirrors.edge.kernel.org/pub/linux/kernel/v4.x/
+
+Download uboot source code Download u-boot-2015.01.tar.bz2
+from ftp://ftp.denx.de/pub/u-boot/
+
+Download buildroot source code Download buildroot-2020.05.tar.bz2
+from https://buildroot.org/downloads/
+
+The Baidu network disk link of SSD20X data is as follows:
+Link: https://pan.baidu.com/s/1SuN5QLcpg3NqAVQTZ4mCkA
+Extraction code: wgqp
+
+1. Download the project
+and download source/project.tar.bz2 from the Baidu Cloud link.
+
+2. Download source/Release_to_customer.sh
+
+3. Download the cross compilation tool
+and download source/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tar.gz from the Baidu cloud link
+
+4. Download patch
+Download patch/ssd201_kernel_4.9.84.patch and patch/ssd201_u_boot_2015.01.patch from Baidu cloud link
+
+Ubuntu installs the cross compilation chain
+and decompresses gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tar.gz
+
+# tar -xvf gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf.tar.gz -C .
+1
+Modify environment variables
+
+Set environment variables in combination with your own path: /home/hu/ssd201save the path of the above file for yourself
+
+# vim ~/.bashrc
+# export PATH=/home/hu/ssd201/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin:$PATH
+verify
+
+# source ~/.bashrc
+# which arm-linux-gnueabihf-gcc
+
+Install the SDK source code
+Put the files downloaded in the "Source code download" step in the same directory of the Linux system, and then perform the following steps to complete the installation of the SDK source code.
+
+Install uboot source code
+
+# tar -jxvf u-boot-2015.01.tar.bz2 -C .
+# cd u-boot-2015.01
+# patch -p1 < ../ssd201_u_boot_2015.01.patch
+# chmod a+x create_img.sh mz mkimage
+
+Unzip the kernel source code
+
+# tar -xvf linux-4.9.84.tar.gz -C .
+# cd linux-4.9.84
+# patch -p1 < ../ssd201_kernel_4.9.84.patch
+# chmod a+x ms_pack_modules.sh
+
+Unzip the project source code
+
+# tar -jxvf project.tar.bz2 -C .
+
+2. Source code compilation
+The compilation script is Release_to_customer.sh, through which the entire project can be compiled, including uboot, kernel and rootfs. You need to modify the configuration before running:
+configure the compilation script
+
+# vim Release_to_customer.sh
+
+Note: change according to your own path
+
+Modify the image storage path, and the image is stored in the ${RELEASEDIR}/images/ directory;
+
+Modify ARCH to arm #exportARCH=arm
+
+Optimize the compilation speed and start compiling.
+You can see that when the Release_to_customer.sh script is executed, 3 parameters (-f, -p, -q) need to be passed;
+
+-f indicates the type of flash, optional nand, nor;
+-p indicates the chip model, optional ssd201, ssd202;
+-q indicates fast boot mode, optional fastboot or empty;
+
+Note: 64-bit virtual machines need to download 32-bit Libraries to support the build environment
+
+# sudo apt-get install lib32z1*
+# sudo apt-get install libncurses5-dev
+1
+2
+Here we take nand+ssd202 as an example to start compiling the source code:
+
+# ./Release_to_customer.sh -f nand -p ssd202
+
+After compiling once, if you do not change the chip model, you can comment out the make clean of uboot and kernel in Release_to_customer.sh
+
+Compiling buildroot
+Release_to_customer.sh does not include buildroot's configuration, so buildroot needs to be configured separately.
+
+# tar -jxvf buildroot-2020.05.tar.bz2 -C .
+# cd buildroot-2020.05/
+# make menuconfig
+
+The following configuration interface appears.
+
+Corresponding to the above serial number 1, enter to make changes and then save.
+
+Corresponding to the above serial number 2, enter to make changes and then save.
+
+
+After the compilation is complete, the file system we need will be generated in the output/target/ directory.

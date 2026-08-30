@@ -1,0 +1,66 @@
+SSD202 merged its own project into the official Project
+
+True to the original intention
+
+Posted at 2022-03-25 22:11:25
+
+515
+ collect
+Category column: linux Article tags: linux chip
+copyright
+
+linux
+The column contains this content
+24 articles0 subscriptions
+Subscribe to the column
+Here I take the ported lvgl as an example:
+
+1. Copy the project folder "lv_port_linux_frame_buffer" to the app directory of the sdk:
+
+mine is here
+
+/home/xiang/linux/ssd202d/V50/sdk/verify/application/lv_port_linux_frame_buffer
+
+Then modify the app.mk in the previous directory
+
+Add at the bottom:
+
+ifeq ($(verify_lv_port_linux_frame_buffer),enable)
+	include $(APPLICATION_PATH)/lv_port_linux_frame_buffer/image.mk
+endif
+This is done so that when the project is packaged, the image.mk in the project can be called
+
+2. Create it in the lv_port_linux_frame_buffer directory
+
+image.mk and run.sh two files
+
+image.mk content:
+
+app:
+ifeq ($(IMAGE_INSTALL_DIR),)
+	@echo "directory of image is not defined"
+	@exit 1
+endif
+	@cp -rf $(APPLICATION_PATH)/lv_port_linux_frame_buffer/demo $(IMAGE_INSTALL_DIR)/customer/demo
+	@$(TOOLCHAIN_REL)strip --strip-unneeded $(IMAGE_INSTALL_DIR)/customer/demo
+	@cat $(APPLICATION_PATH)/lv_port_linux_frame_buffer/run.sh >> $(IMAGE_INSTALL_DIR)/customer/demo.sh
+ 
+run.sh content:
+
+ifconfig lo 127.0.0.1 up
+ifconfig eth0 192.168.123.160 netmask 255.255.255.0
+ifconfig eth0 hw ether 00:70:27:00:00:01
+route add default gw 192.168.123.1
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib:/customer/lib:/lib
+cd /customer
+chmod 777 demo
+./demo &
+
+In fact, it is not difficult to understand, that is, copy the files, and after doing the above, the most important thing is to go to the peoject to configure it, so that the project can be packaged.
+
+My board configuration is in this file, nvr_i2m_display_glibc_tailor.mk
+
+In: /home/xiang/linux/ssd202d/V50/project/release/customer_tailor directory.
+
+verify_lv_port_linux_frame_buffer:=enable
+After doing this, just go to make image in the project directory, and then burn the image to the development board, and the project will run automatically.

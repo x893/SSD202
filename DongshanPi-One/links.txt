@@ -1,0 +1,7 @@
+https://github.com/100askTeam/mstar_u-boot
+https://github.com/100askTeam/mstar_linux
+https://wx.comake.online/doc/syg27dk2rkls-SSD20X/customer/development/arch/arch.html
+https://e.coding.net/codebug8/repo.git	
+https://github.com/DongshanPI/Sigmastar-Boot.git
+https://github.com/DongshanPI/Sigmastar-Linux.git
+https://github.com/DongshanPI/buildroot_dongshanpione.git

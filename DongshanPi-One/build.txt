@@ -1,0 +1,36 @@
+sudo apt-get install -y libc6-dev-i386 lib32z1 lib32ncurses5 libuuid1:i386 cmake libncurses5-dev libncursesw5-dev bc xz-utils automake libtool libevdev-dev pkg-config openssh-server repo
+
+git clone https://e.coding.net/codebug8/repo.git
+cd DongshanPiOne-TAKOYAKI
+../repo/repo init -u  https://gitee.com/weidongshan/manifests.git -b linux-sdk -m  SSD202D/dongshanpi-one_takoyaki_dlc00v030.xml --no-repo-verify
+../repo/repo sync -j4
+
+# Add this line to .bashrc:
+export PATH=$PATH:/home/mculover666/dongshanPi-one/DongshanPiOne-TAKOYAKI/gcc-arm-8.2-2018.08-x86_64-arm-linux-gnueabihf/bin
+source .bashrc
+
+# Check version
+arm-linux-gnueabihf-gcc -v
+
+# Compile kernel
+export ARCH=arm
+export CROSS_COMPILE=arm-linux-gnueabihf-
+cd kernel
+
+make infinity2m_spinand_ssc011a_s01a_minigui_defconfig
+make
+
+
+cd arch/arm/boot
+# Among them uImage.xz is the kernel image we need to burn to nand flash.
+
+2. Burn the kernel in uboot
+Burn the kernel to nand via SD card:
+
+fatload  mmc 0:1  0x21000000 uImage.xz
+nand erase.part KERNEL
+nand write.e 0x21000000 KERNEL ${filesize}
+nand erase.part RECOVERY
+nand write.e 0x21000000 RECOVERY ${filesize}
+
+# The knowledge points of the article are matched with the official knowledge files, which can further learn related knowledge

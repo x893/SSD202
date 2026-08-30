@@ -1,0 +1,116 @@
+1 Partition Description
+The examples in this article use SPI NAND flash devices
+
+CIS:
+The unique partition of SPI-NAND, which is stored in the 0 address of the flash. It contains two parts:
+one part is spinand info, which saves some basic information of spinand devices; the other
+part is partinifo, which saves partition information
+
+IPL:
+The CPU starts and loads the startup code in the ROM, loads the 0 address code of the FLASH, obtains the code of this partition and runs it.
+This partition code initializes some basic hardware, such as setting the current DDR parameters, and GPIO /IIC related.
+
+IPL_CUS:
+Initialize customized board hardware, such as GPIO, IIC, etc., according to the actual situation of the current board.
+
+UBOOT:
+As the title says.
+
+ENV:
+UBOOT's environment variable storage partition.
+
+LOGO:
+The configuration and data related to the boot logo.
+
+KERNEL:
+As the title says.
+
+ROOTFS:
+As shown in the title.
+
+miservice:
+a library for storing mi; some configurations such as memory and screen.
+For details, please refer to the miservice partition establishment process of https://blog.csdn.net/winner0911/article/details/124174631
+
+appconfigs
+The client's own custom application configuration.
+
+customer:
+The application customized by the customer.
+
+2 Partition change production steps
+According to project definition spinand.glibc.011a.128 file:
+IMAGE_CONFIG = spinand.ubifs.p2.partition.config
+According to spinand.ubifs.p2.partition.config file
+IMAGE_LIST = cis ipl ipl_cust uboot logo kernel rootfs miservice customer appconfigs
+These are made When projecting an image, images/image.mk will generate a binary bin file based on this list.
+
+Partition information:
+customer$(RESOUCE) = KaTeX parse error: Expected 'EOF', got '#' at position 24: …IR)/customer #̲ Folder directory customer (FSTYPE) = ubifs # Partition file system
+customer KaTeX parse error : Expected 'EOF', got '#' at position 28: …= 0xA00000 #̲ Storage location customer (MOUNTTG) = /customer # System mount target
+customer KaTeX parse error: Expected 'EOF', got '#' at position 31 : …i0:customer #̲ System mount source cu… (OPTIONS) = rw # Partition read and write permissions
+customer$(OTABLK) = /dev/ubi0_2 # Partition device node
+
+Modify the corresponding partition size
+
+opt/project/image/makefiletools/bin/pnigenerator -s 64 -p 2048 -b 64 -k 1024 -u 8 -l 0x20000 -t “0x140000(CIS),0x20000@0x140000(IPL0)2,0x20000(IPL1)2,0x20000(IPL_CUST0)2,0x20000(IPL_CUST1)2,0x40000(UBOOT0)4,0x40000(UBOOT1)4,0x20000(ENV0)1,0x20000(ENV1)1,0x280000(KERNEL)2,0x280000(RECOVERY)2,0x00f40000(rootfs)2,0x00f40000(rootfs_bak)2” -y “0x20000(KEY_CUST),0x400000(miservice),0x60000(LOGO),-(UBI)” -o /opt/project/image/output/images/boot/PARTINFO.pni
+BOOT: 0x140000(CIS),0x20000@0x140000(IPL0)2,0x20000(IPL1)2,0x20000(IPL_CUST0)2,0x20000(IPL_CUST1)2,0x40000(UBOOT0)4,0x40000(UBOOT1)4,0x20000(ENV0)1,0x20000(ENV1)1,0x280000(KERNEL)2,0x280000(RECOVERY)2,0x00f40000(rootfs)2,0x00f40000(rootfs_bak)2
+SYS: 0x20000(KEY_CUST),0x400000(miservice),0x60000(LOGO),-(UBI)
+FLASH HAS USED 0x8000000KB
+ChkSum : 2103
+SpareByteCnt : 64
+PageByteCnt : 2048
+BlkPageCnt : 64
+BlkCnt : 1024
+PartCnt : 17
+UnitByteCnt : 8
+Checksum ok!!
+IDX: StartBlk: BlkCnt: BackupBlkCnt: PartType:
+0: 0,(0000000000) 10,(0X00140000) 0,(0000000000) 0X0020,(CIS)
+1: 10,(0X00140000) 1,(0X00020000) 2,(0X00040000) 0X0003,(IPL0)
+2: 13,(0X001A0000) 1,(0X00020000) 2,(0X00040000) 0X0003,(IPL1)
+3: 16,(0X00200000) 1,(0X00020000) 2,(0X00040000) 0X0001,(IPL_CUST0)
+4: 19,(0X00260000) 1,(0X00020000) 2,(0X00040000) 0X0001,(IPL_CUST1)
+5: 22,(0X002C0000) 2,(0X00040000) 4,(0X00080000) 0X0006,(UBOOT0)
+6: 28,(0X00380000) 2,(0X00040000) 4,(0X00080000) 0X0006,(UBOOT1)
+7: 34,(0X00440000) 1,(0X00020000) 1,(0X00020000) 0X000D,(ENV0)
+8: 36,(0X00480000) 1,(0X00020000) 1,(0X00020000) 0X000D,(ENV1)
+9: 38,(0X004C0000) 20,(0X00280000) 2,(0X00040000) 0X0012,(KERNEL)
+10: 60,(0X00780000) 20,(0X00280000) 2,(0X00040000) 0X0009,(RECOVERY)
+11: 82,(0X00A40000) 122,(0X00F40000) 2,(0X00040000) 0X000F,(rootfs)
+12: 206,(0X019C0000) 122,(0X00F40000) 2,(0X00040000) 0X001F,(rootfs_bak)
+13: 330,(0X02940000) 1,(0X00020000) 0,(0000000000) 0X0040,(KEY_CUST)
+14: 331,(0X02960000) 32,(0X00400000) 0,(0000000000) 0XF000,(miservice)
+15: 363,(0X02D60000) 3,(0X00060000) 0,(0000000000) 0X0002,(LOGO)
+16: 366,(0X02DC0000) 658,(0X05240000) 0,(0000000000) 0X0021,(UBI)
+
+3 partition system display
+/ # cat /proc/mtd
+dev: size erasesize name
+mtd0: 00060000 00020000 “IPL0”
+mtd1: 00060000 00020000 “IPL1”
+mtd2: 00060000 00020000 “IPL_CUST0”
+mtd3: 00060000 00020000 “IPL_CUST1”
+mtd4: 000c0000 00020000 “UBOOT0”
+mtd5: 000c0000 00020000 “UBOOT1”
+mtd6: 00040000 00020000 “ENV”
+mtd7: 00040000 00020000 “ENV1”
+mtd8: 002c0000 00020000 “KERNEL”
+mtd9: 002c0000 00020000 “RECOVERY”
+mtd10: 00f80000 00020000 “rootfs”
+mtd11: 00f80000 00020000 “rootfs_bak”
+mtd12: 00020000 00020000 “KEY_CUST”
+mtd13: 002a0000 00020000 “miservice”
+mtd14: 00060000 00020000 “LOGO”
+mtd15: 0d3a0000 00020000 “UBI”
+
+4 Add a new partition
+Add the name of the partition to the IMAGE_LIST in the IMAGE_CONFIG = spinand.ramfs-squashfs.p2.partition.config
+file and
+add the configuration parameters corresponding to the partition, such as type, size, etc.
+The system will automatically generate it during the compilation process.
+
+5 script_nand.mk generates uboot script
+image/configs/i2m/script_nand.mk
+Remember to check whether the content of the script file is the same as required.
+It affects programming and system mounts.
