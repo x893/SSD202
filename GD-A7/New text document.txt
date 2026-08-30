@@ -1,0 +1,23 @@
+ping 127.0.0.1
+ping -c 6 127.0.0.1
+
+# restart samba
+sudo /etc/init.d/smbd restart
+
+#decompress gz
+Unzip 1: gunzip FileName.gz
+
+# reset the dash directory
+sudo dpkg-reconfigure dash
+
+# Mount the specified directory of nfs to the tmp directory,
+# which is used for file copying between the target machine and PC,
+# and requires the host computer to run win_nfs
+mount -t nfs -o nolock 192.168.1.127:/d/nfs /tmp
+
+export LD_LIBRARY_PATH=/lib:$PWD:$LD_LIBRARY_PATH
+
+# How to set the resolution of fb, in addition to modifying config/fbdev.ini after burning
+./prog --interface lcd -l ttl -f ./yuv420sp_480x270.yuv 
+make disp_clean
+make disp

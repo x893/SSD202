@@ -1,0 +1,64 @@
+============================================================================================================================================================
+Version: TAKOYAKI_DLS00V008
+Patches: The following patches are combined on the basis of the original release SDK
+	(1) Spinand master film production failed
+	(2) Probabilistic kernel deadlock serial port without printing
+	(3) Close coreudmp
+	(4) The network port light is off
+============================================================================================================================================================
+TAKOYAKI_DLS00V008 compilation instructions:
+1. Put boot, kernel, project, sdk, Release_to_customer.sh in the same directory
+2. Use Release_to_customer.sh to fully compile
+	(1) The compiled version is: ssd201 + nor, execute the script: ./Release_to_customer.sh -p ssd201 -f nor
+	(2) The compiled version is: ssd201 + nor + fastboot, execute the script: ./Release_to_customer.sh -p ssd201 -f nor -q fastboot
+	(3) The compiled version is: ssd201 + nand, execute the script: ./Release_to_customer.sh -p ssd201 -f nand
+	(4) The compiled version is: ssd201 + nand + fastboot, execute the script: ./Release_to_customer.sh -p ssd201 -f nand -q fastboot
+	(5) The compiled version is: ssd202 + nor, execute the script: ./Release_to_customer.sh -p ssd202 -f nor
+	(6) The compiled version is: ssd202 + nor + fastboot, execute the script: ./Release_to_customer.sh -p ssd202 -f nor -q fastboot
+	(7) The compiled version is: ssd202 + nand, execute the script: ./Release_to_customer.sh -p ssd202 -f nand
+	(8) The compiled version is: ssd202 + nand + fastboot, execute the script: ./Release_to_customer.sh -p ssd202 -f nand -q fastboot
+3. Use build_project.sh (under the project directory) to compile the project separately. The parameters of this script are the same as those of Release_to_customer
+4. Use build_boot.sh (under the boot directory) to compile the boot and update it to the project (you need to recompile the project), the script parameter is -f nor or -f nand, without parameters the default is nand
+5. Use build_kernel.sh (under the kernel directory) to compile the kernel, the script parameter is -f nand -q fastboot or -f nor -q fastboot, and no parameter is nand normal kernel
+============================================================================================================================================================
+TAKOYAKI_DLS00V008 UI configuration description:
+1. Normal version
+	(1) Configuration file nvr_i2m_display_glibc_tailor.mk
+	(2) File path: /project/release/customer_tailor
+	(3) Configuration method: modify the configuration file and enable the UI, such as specifying zk_full: verify_zk_full:=enable
+2. Fastboot version
+	(1) Configuration file nvr_i2m_display_fastboot_glibc_tailor.mk
+	(2) File path: /project/release/customer_tailor
+	(3) Configuration method: change the configuration file and enable the UI, such as specifying zk_full_fastboot: verify_zk_full_fastboot:=enable
+============================================================================================================================================================
+TAKOYAKI_DLS00V008 UI authorization description:
+1. Authorized version UI: zk_full_security, the source code download path of its compilation screen parameters: https://github.com/aaron201912/UuidSSDPlayer
+2. Unauthorized version UI: All UIs except zk_full_security are unauthorized. The UI will be restarted every 30 minutes. The source code download path of the unauthorized version compilation screen parameters:
+   https://github.com/aaron201912/SSD_PLAYER
+============================================================================================================================================================
+TAKOYAKI_DLS00V008 upgrade instructions:
+1. ISP Tool upgrade: Generally, it is not possible to upgrade from an empty chip or under uboot. You need to use ISP to upgrade first before using other methods to upgrade.
+	It should be noted that: because the printing and programming are connected to the same SPI interface, you must first disconnect the printing when programming, and then re-power on. You need to click connect immediately at the moment of power-on
+2. TFTP upgrade, the upgrade tool is tftpd32.exe, and the upgrade steps are:
+	(1) Open tftpd32 and point the current directory to ../project/image/output/images
+	(2) Configure the static IP of the computer network card as 192.168.1.127 and the gateway: 192.168.1.1. The static IP is set to prevent the upgrade from changing due to IP changes during the upgrade process.
+	(3) The network configuration of the computer and the development board must be configured in the same local area network
+	(4) Use the network cable to connect to the development board eth0, press the Enter key, power on the board again, enter the command line mode, and enter the following commands:
+	 			a. setenv ipaddr 192.168.1.100
+	 			b. setenv serverip 192.168.1.127
+	 			c. saveenv
+	 			d. estar (upgrade instruction)
+3. U disk upgrade
+	(1) After compiling the project, execute the script make_usb_upgrade_sigmastar.sh to make the U disk upgrade bin file. No parameters are required to execute the script. In addition, in the process of making the bin, all options are y
+	(2) The generated bin file path is: ../project/image/output/images
+	(3) Copy SigmastarUpgrade.bin to U disk
+	(4) Press the Enter key, power on the board again, enter the command line mode, and enter the following commands:
+	 			a. setenv UpgradePort 1
+	 			b. saveenv
+	 			c. usbstar
+4. SD card upgrade
+	(1) After compiling the project, execute the script make_sd_upgrade_sigmastar.sh to create the bin file for U disk upgrade. No parameters are required to execute the script. In addition, during the bin creation process, all options are y
+	(2) The generated bin file path is: ../project/image/output/images
+	(3) Copy SigmastarUpgradeSD.bin to SD card
+	(4) Press the Enter key, power on the board again, enter the command line mode, and enter the following command: sdstar
+============================================================================================================================================================

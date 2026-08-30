@@ -1,0 +1,64 @@
+============================================================================================================================================================
+版本：TAKOYAKI_DLS00V008
+补丁：在原厂释放SDK的基础合了以下补丁
+	（1）spinand母片制作失败
+	（2）概率性kernel死锁串口无打印
+	（3）关闭coreudmp
+	（4）网口灯不亮
+============================================================================================================================================================
+TAKOYAKI_DLS00V008编译说明：
+1、将boot、kernel、project、sdk、Release_to_customer.sh放在同一目录
+2、使用Release_to_customer.sh全编译
+	（1）编译版本为：ssd201 + nor,			执行脚本：./Release_to_customer.sh -p ssd201 -f nor
+	（2）编译版本为：ssd201 + nor + fastboot,	执行脚本：./Release_to_customer.sh -p ssd201 -f nor -q fastboot
+	（3）编译版本为：ssd201 + nand，		执行脚本：./Release_to_customer.sh -p ssd201 -f nand
+	（4）编译版本为：ssd201 + nand + fastboot,	执行脚本：./Release_to_customer.sh -p ssd201 -f nand -q fastboot	
+	（5）编译版本为：ssd202 + nor,			执行脚本：./Release_to_customer.sh -p ssd202 -f nor
+	（6）编译版本为：ssd202 + nor + fastboot,	执行脚本：./Release_to_customer.sh -p ssd202 -f nor -q fastboot
+	（7）编译版本为：ssd202 + nand，		执行脚本：./Release_to_customer.sh -p ssd202 -f nand
+	（8）编译版本为：ssd202 + nand + fastboot,	执行脚本：./Release_to_customer.sh -p ssd202 -f nand -q fastboot	
+3、使用build_project.sh（project目录下）单独编译project，该脚本所带参数和Release_to_customer的一样		
+4、使用build_boot.sh（boot目录下）编译boot并更新到project中（需要重新编译一下project），脚本参数为 -f nor 或者-f nand，不带参数默认为nand
+5、使用build_kernel.sh（kernel目录下）编译kernel，脚本参数为-f nand -q fastboot 或者-f nor -q fastboot，不带参数为nand normal kernel
+============================================================================================================================================================
+TAKOYAKI_DLS00V008 UI配置说明：
+1、normal版本
+	（1）配置文件：nvr_i2m_display_glibc_tailor.mk
+	（2）文件路径：/project/release/customer_tailor
+	（3）配置方法：修改配置文件，使能UI，比如指定zk_full：verify_zk_full:=enable
+2、fastboot版本
+	（1）配置文件：nvr_i2m_display_fastboot_glibc_tailor.mk
+	（2）文件路径：/project/release/customer_tailor
+	（3）配置方法：改配置文件，使能UI，比如指定zk_full_fastboot：verify_zk_full_fastboot:=enable
+============================================================================================================================================================
+TAKOYAKI_DLS00V008 UI授权说明：
+1、授权版本UI：zk_full_security，其编译屏参的源码下载路径：https://github.com/aaron201912/UuidSSDPlayer
+2、非授权版本UI：除了zk_full_security外的其他UI都是非授权的，UI会每隔30分钟重启一次，非授权版本编译屏参的源码下载路径： 
+   https://github.com/aaron201912/SSD_PLAYER
+============================================================================================================================================================
+TAKOYAKI_DLS00V008升级说明:
+1、ISP Tool升级：一般空片或者uboot下不能升级需要使用ISP先升级，才能使用其他方式升级
+	 需要注意的是：因为打印和烧录连接的是同一个SPI接口，在烧录时要先断开打印，然后重新上电，在上电的瞬间需要立刻点击connect
+2、TFTP升级，升级工具为tftpd32.exe，升级步骤为：
+	 （1）打开tftpd32，将current directory 指向../project/image/output/images
+	 （2）配置电脑网卡静态ip为192.168.1.127，网关：192.168.1.1，设置为静态IP是为了防止升级过程中IP发生变化导致升级失败
+	 （3）电脑和开发板的网络配置一定要配置在同一个局域网中
+	 （4）使用网线连接开发板eth0，按着回车键，给板子重新上电，进入命令行模式，输入以下指令：
+	 			a、setenv ipaddr 192.168.1.100
+	 			b、setenv serverip 192.168.1.127
+	 			c、saveenv
+	 			d、estar(升级指令)
+3、U盘升级
+	 （1）编译完project后，要执行脚本make_usb_upgrade_sigmastar.sh制作U盘升级的bin文件，执行脚本不需要带参数，另外制作bin过程中，所有选项为y
+	 （2）生成的bin文件路径为：../project/image/output/images	 	
+	 （3）将SigmastarUpgrade.bin拷贝到U盘		
+	 （4）按着回车键，给板子重新上电，进入命令行模式，输入以下指令：
+	 			a、setenv UpgradePort 1
+	 			b、saveenv
+	 			c、usbstar
+4、SD卡升级
+	 （1）编译完project后，要执行脚本make_sd_upgrade_sigmastar.sh制作U盘升级的bin文件，执行脚本不需要带参数，另外制作bin过程中，所有选项为y
+	 （2）生成的bin文件路径为：../project/image/output/images	 	
+	 （3）将SigmastarUpgradeSD.bin拷贝到SD卡	
+	 （4）按着回车键，给板子重新上电，进入命令行模式，输入以下指令：sdstar
+============================================================================================================================================================
